@@ -12,13 +12,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 
 public class Home_Page_Fragment extends Fragment {
     TextView populateInterests;
     private Button[] interestBtns = new Button[10];
-
 
     @Nullable
     @Override
@@ -26,7 +25,6 @@ public class Home_Page_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.content_main, container, false);
 
         populateInterests = view.findViewById(R.id.testDBPopulate);
-
 
         TextView populateInterests = view.findViewById(R.id.testDBPopulate);
         List<Interest> interestList = MainActivity.myDB.myDao().getInterests();
@@ -43,7 +41,7 @@ public class Home_Page_Fragment extends Fragment {
                 int basePeriodSpan = intr.getBasePeriodSpan();
                 int numNotifications = intr.getNumNotifications();
 
-                double[] tempNotifTimes = intr.getNotifTimes();
+                double[] tempNotifTimes = intr.getNotifTimes(intr.getNumNotifications());
 
                 info += interestName + "    " + activityLength + "      " + periodFreq + "    " +
                         basePeriodSpan + "   " + numNotifications + "      ";
@@ -57,10 +55,9 @@ public class Home_Page_Fragment extends Fragment {
                 break;
         }
 
-        info += "number of interests: " + MainActivity.getInterestTableSz() + "\n";
+        info += "number of interests: " + getInterestTableSz() + "\n";
 
         populateInterests.setText(info);
-        // CODE FOR TEMP TABLE VIEW ENDS HERE
 
         //displayButtons(interestList);
         // CODE FOR BUTTON POPULATION BEGINS HERE
@@ -97,18 +94,36 @@ public class Home_Page_Fragment extends Fragment {
                 periodSpan = "month";
             else
                 periodSpan = "year";
+            // Getting minutes for time remaining
+            int mRemaining = (int) interestList.get(i).getTimeRemaining();
+            // Getting seconds for time remaining
+            double sRemaining = (interestList.get(i).getTimeRemaining() - (int) interestList.get(i).getTimeRemaining())*60;
+
+            String timeSpentString = MainActivity.convertToUnits(interestList.get(i));
 
             String buttonText = interestList.get(i).getInterestName() + " \n" +
-                                interestList.get(i).getStreakCt() + " day streak \n" +
-                                interestList.get(i).getPeriodFreq() + " times " +
-                                interestList.get(i).getActivityLength() + " minutes a " +
-                                periodSpan;
+                    interestList.get(i).getStreakCt() + " day streak \n" +
+                    interestList.get(i).getPeriodFreq() + " time(s) " +
+                    interestList.get(i).getActivityLength() + " minute(s) a " +
+                    periodSpan + "\n Time remaining: "  + mRemaining + ":" +
+                    String.format("%.0f", sRemaining) + timeSpentString;
 
             interestBtns[i].setText(buttonText);
         }
         // CODE FOR BUTTON POPULATION ENDS HERE
-
+        //Sets all interests currentDates to today.
+        String today = MainActivity.getCurrentDate();
+        for(int i = 0; i < sz; i++){
+            String interestName = interestList.get(i).getInterestName();
+            Interest interest = MainActivity.myDB.myDao().loadInterestByName(interestName);
+            interest.setCurrentDate(today);
+            MainActivity.myDB.myDao().updateInterest(interest);
+        }
 
         return view;
+    }
+
+    public static int getInterestTableSz() {
+        return MainActivity.myDB.myDao().getInterests().size();
     }
 }
