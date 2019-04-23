@@ -57,10 +57,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
+        android:onClick = "startStopTimer"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="24dp"
         android:background="@color/colorPrimary"
-        android:onClick="startStopTimer"
+
         android:text="Start Activity"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toStartOf="@+id/doneButton"
@@ -125,19 +126,6 @@
                 android:inputType="number" />
 
             <TextView
-                android:id="@+id/NumNotificationSpan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notification Period" />
-
-            <Spinner
-                android:id="@+id/numNotificationSpan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:spinnerMode="dropdown" />
-
-            <TextView
                 android:id="@+id/NumNotificationsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="0dp"
-                android:onClick="submitEditInterest"
+                android:onClick="onEditInterest"
                 android:text="Submit Interest" />
 
             <Button
@@ -164,6 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:onClick="onDeleteInterest"
                 android:text="Delete Interest" />
         </LinearLayout>
     </ScrollView>
@@ -171,14 +160,14 @@
     <com.example.activitease.MyGLSurfaceView
         android:id="@+id/openGLView"
         android:layout_width="360dp"
-        android:layout_height="249dp"
+        android:layout_height="219dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -212,5 +201,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.135"
         app:layout_constraintStart_toEndOf="@+id/startStop" />
+
+
+    <TextView
+            android:id="@+id/streakCount"
+            android:layout_width="100dp"
+            android:layout_height="21dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="TextView"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/startStop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/openGLView"
+            app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/customNotification"
+        android:layout_width="149dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginRight="52dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorPrimary"
+        android:onClick="customNotificationBTN"
+        android:text="Customize Notifications "
+        app:layout_constraintBottom_toTopOf="@+id/openGLView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
