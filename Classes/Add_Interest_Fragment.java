@@ -179,7 +179,7 @@ public class Add_Interest_Fragment extends Fragment {
 
                     // Creates a new Interest object of the given int variables.
                     Interest interest = new Interest(newInterestName, newPeriodFreq, basePeriodSpan,
-                            newActivityLength, newActivityLength, newNumNotifications, 0, 0, 0);
+                            newActivityLength, newActivityLength, newNumNotifications, 0, 0, 0, false);
 
                     // Presets the notification times, given the number of notifications.
                     interest.setNotifTimes(newNumNotifications);

@@ -17,13 +17,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private float[] colors = new float[2920]; // 2190 vertices and 4 color values per vertice.
-    private static boolean timerRunning = false;
+    private static boolean timerRunning = false; //Can be toggled to start and stop animation
     private boolean initialTimerDrawn = false;
     private static int numIterations;
     private static double activityLengthMillis;
     private timer timer;
     private static int millisIterationTime;
     private static int nanosIterationTime;
+
 
 
     public static void setTimerRunning(boolean theTimerRunning)
@@ -33,7 +34,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public static void setActivityLength(double activityLength)
     {
         activityLengthMillis = activityLength;
-        double iterationTime = (float) (activityLengthMillis/91) / 4.00;   //Activity length divided by total number of iterations
+        double iterationTime = (float) (activityLengthMillis/91) / 4.00;   //Activity length divided by total number of iterations divided by color coords per iteration
         millisIterationTime = (int) iterationTime;
         nanosIterationTime = (int) iterationTime % 1;
 
@@ -70,7 +71,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         timer = new timer((float)1, (float)0.98);
 
         //Code to draw geometry of clock
-        timer.initialTimerDraw(mMVPMatrix, numIterations);
+        timer.draw(mMVPMatrix, numIterations);
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -95,11 +96,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-            timer.initialTimerDraw(mMVPMatrix, numIterations);
+            timer.draw(mMVPMatrix, numIterations);
             initialTimerDrawn = true;
         }
         //Animation of timer;
-        else if(timerRunning && numIterations < 365 && initialTimerDrawn)
+        else if(timerRunning && numIterations < 365)  //Timer is running and iterations are less than total number of
         {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
@@ -195,7 +196,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             // creates OpenGL ES program executables
             GLES20.glLinkProgram(mProgram);
         }
-        public void draw(float[] mvpMatrix, int n) //Draws and updates timer while running
+        public void draw(float[] mvpMatrix, int numIterations) //Draws and updates timer while running
         {
             // Add program to OpenGL ES environment
             GLES20.glUseProgram(mProgram);
@@ -211,14 +212,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.GL_FLOAT, false,
                     vertexStride, vertexBuffer);
 
-            for(int x = 0; x < n; x++) //Animation loop
+
+            for (int x = 0; x <= numIterations; x++) //Animation loop
             {
                 colors[x * 4 + 0] = 0.98f;
                 colors[x * 4 + 1] = 0.98f;
-                colors[x * 4  + 2] = 0.98f;
+                colors[x * 4 + 2] = 0.98f;
                 colors[x * 4 + 3] = 0.98f;
             }
-            for(int x = n; x < 365; x++) //Draw outer circle
+            for(int x = numIterations; x <= 365; x++) //Draw outer circle
             {
                 colors[(x * 4) + 0] = .251f;
                 colors[(x * 4) + 1] = .879f;
@@ -227,77 +229,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
             for(int x = 365; x < 730; x++) //Draw inner circle
             {
-                colors[x * 4 + 0] = 1f;
-                colors[x * 4 + 1] = 1f;
-                colors[x * 4  + 2] = 1f;
-                colors[x * 4 + 3] = 1f;
+                colors[x * 4 + 0] = .98f;
+                colors[x * 4 + 1] = .98f;
+                colors[x * 4  + 2] = .98f;
+                colors[x * 4 + 3] = .98f;
             }
-            // initialize color byte buffer for color values
-            ByteBuffer cb = ByteBuffer.allocateDirect(colors.length * 4);
-            // use the device hardware's native byte order
-            cb.order(ByteOrder.nativeOrder());
-            // Create a floating point buffer from byte buffer
-            colorBuffer = cb.asFloatBuffer();
-            //add the coordinates to the float buffer
-            colorBuffer.put(colors);
-            // set the buffer to read the first color
-            colorBuffer.position(0);
 
 
-            // get handle to fragment shader's vColor member
-            colorHandle = GLES20.glGetAttribLocation(mProgram, "vColor");
-            GLES20.glEnableVertexAttribArray(colorHandle);
-            GLES20.glVertexAttribPointer(colorHandle, COORDS_PER_COLOR, GLES20.GL_FLOAT, false, colorStride, colorBuffer);
-
-            // Set color for drawing the circle
-            MVPmatrixhandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
-            //Apply projection and view transformation
-            GLES20.glUniformMatrix4fv(MVPmatrixhandle, 1, false, mvpMatrix, 0);
-            // Draw the circle
-            int count = 364;
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, count);
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 365, count);
-
-            // Disable vertex array
-            GLES20.glDisableVertexAttribArray(positionHandle);
-        }
-        public void initialTimerDraw(float[] mvpMatrix, int z) //Draws initial timer without animation parameters
-        {
-            // Add program to OpenGL ES environment
-            GLES20.glUseProgram(mProgram);
-
-            // get handle to vertex shader's vPosition member
-            positionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
-
-            // Enable a handle to the triangle vertices
-            GLES20.glEnableVertexAttribArray(positionHandle);
-
-            // Prepare the triangle coordinate data
-            GLES20.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX,
-                    GLES20.GL_FLOAT, false,
-                    vertexStride, vertexBuffer);
-
-            for(int x = 0; x < z; x++) //Animation loop
-            {
-                colors[x * 4 + 0] = 0.98f;
-                colors[x * 4 + 1] = 0.98f;
-                colors[x * 4  + 2] = 0.98f;
-                colors[x * 4 + 3] =0.98f;
-            }
-            for(int x = numIterations; x < 365; x++) //Draw outer circle
-            {
-                colors[(x * 4) + 0] = .251f;
-                colors[(x * 4) + 1] = .879f;
-                colors[(x * 4)  + 2] = .816f;
-                colors[(x * 4) + 3] = 1.0f;
-            }
-            for(int x = 365; x < 730; x++) //Draw inner circle
-            {
-                colors[x * 4 + 0] = 0.98f;
-                colors[x * 4 + 1] = 0.98f;
-                colors[x * 4  + 2] = 0.98f;
-                colors[x * 4 + 3] = 0.98f;
-            }
             // initialize color byte buffer for color values
             ByteBuffer cb = ByteBuffer.allocateDirect(colors.length * 4);
             // use the device hardware's native byte order

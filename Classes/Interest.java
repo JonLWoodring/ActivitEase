@@ -61,6 +61,8 @@ public class Interest {
     private double totalTimeSpent;
     @ColumnInfo()
     private boolean streakCTBool;
+    @ColumnInfo()
+    private boolean activityActive;
 
     @ColumnInfo()
     private String currentDate;
@@ -103,7 +105,7 @@ public class Interest {
     and then into the database.
      */
     public Interest(String interestName, int periodFreq, int basePeriodSpan,
-                         int activityLength, double timeRemaining, int numNotifications, int streakCt, int numIterations, double totalTimeSpent) {
+                         int activityLength, double timeRemaining, int numNotifications, int streakCt, int numIterations, double totalTimeSpent, boolean activityActive) {
         this.interestName = interestName;
         this.periodFreq = periodFreq;
         this.basePeriodSpan = basePeriodSpan;
@@ -112,6 +114,7 @@ public class Interest {
         this.numNotifications = numNotifications;
         this.streakCt = streakCt;
         this.numIterations = numIterations;
+        this.activityActive = activityActive;
 
         periodRemaining = periodFreq;
         streakCTBool = false;
@@ -146,6 +149,7 @@ public class Interest {
     public void setStreakCTBool(Boolean streakCTBool) { this.streakCTBool = streakCTBool;}
     public void setCurrentDate(String currentDate) { this.currentDate = currentDate;}
     public void setLastDate(String lastDate) { this.lastDate = lastDate;}
+    public void setActivityActive(Boolean activityActive) { this.activityActive = activityActive;}
 
     public void addTimeSpent(double time) {this.totalTimeSpent += time;}
 
@@ -275,6 +279,7 @@ public class Interest {
     public String getLastDate() {return lastDate;}
     public boolean getStreakCTBool() { return streakCTBool;}
     public String getCurrentDate() { return currentDate;}
+    public Boolean getActivityActive() { return activityActive;}
 
     public int getNumIterations() { return numIterations; }
     public double getNotifTime1() { return notifTime1; }

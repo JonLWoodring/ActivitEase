@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -252,7 +253,6 @@ public class MainActivity extends AppCompatActivity
             Initializes variables in the Interest_Fragment object, which will then be used
             once the Interest_Fragment's onCreateView method is activated.
          */
-        populatedInterest.setButtonText("Start Activity");
         populatedInterest.initializeInterest(thisInterest.getInterestName());
         /*
             pSpanPtr is the pointer for the Spinner selection.
@@ -267,6 +267,18 @@ public class MainActivity extends AppCompatActivity
 
         hp.replace(R.id.fragment_container, populatedInterest);
         hp.commit();
+
+        if(thisInterest.getActivityActive())
+        {
+            populatedInterest.setButtonText("Pause");
+            populatedInterest.pauseTimer();
+            GLRenderer.setTimerRunning(false);
+            populatedInterest.startTimer();
+            GLRenderer.setTimerRunning(true);
+        }
+        else {
+            populatedInterest.setButtonText("Start Activity");
+        }
     }
     
     
@@ -636,12 +648,9 @@ public class MainActivity extends AppCompatActivity
                         if (!updatedInterest.getStreakCTBool())
                             updatedInterest.setStreakCt(updatedInterest.getStreakCt() + 1);
                         updatedInterest.setStreakCTBool(true);
-                        updatedInterest.setTimeRemaining(updatedInterest.getActivityLength());
-                        updatedInterest.setNumIterations(0);
                         MainActivity.myDB.myDao().updateInterest(updatedInterest);
 
                         FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
-                        resetTimer.setTimerRunning(false);
                         resetTimer.initializeInterest(updatedInterest.getInterestName());
                         resetTimer.setButtonText("Start Activity");
 
@@ -792,9 +801,11 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Interest updatedInterest = MainActivity.myDB.myDao().loadInterestByName(currentInterestName);
+                            updatedInterest.setActivityActive(true);
+                            myDB.myDao().updateInterest(updatedInterest);
 
                             Interest_Fragment updateInterest = new Interest_Fragment();
-                            updateInterest.setTimerRunning(true);
+
                             FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
                             updateInterest.initializeInterest(updatedInterest.getInterestName());
                             GLRenderer.setNumIterations(updatedInterest.getNumIterations());
@@ -802,6 +813,13 @@ public class MainActivity extends AppCompatActivity
 
                             hp.replace(R.id.fragment_container, updateInterest);
                             hp.commit();
+                            updateInterest.startTimer();
+                            GLRenderer.setTimerRunning(true);
+                            GLRenderer.setNumIterations(updatedInterest.getNumIterations());
+                            GLRenderer.setActivityLength(updatedInterest.getActivityLength() * 60 * 1000);
+
+
+
                         }
 
                     })
@@ -810,15 +828,17 @@ public class MainActivity extends AppCompatActivity
         } else if (startStopTimerText.equals("Pause")) {
 
             Interest updatedInterest = MainActivity.myDB.myDao().loadInterestByName(currentInterestName);
+            updatedInterest.setActivityActive(false);
+            myDB.myDao().updateInterest(updatedInterest);
             Interest_Fragment updateInterest = new Interest_Fragment();
             updateInterest.pauseTimer();
             FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
-            updateInterest.setTimerRunning(false);
             updateInterest.initializeInterest(updatedInterest.getInterestName());
             updateInterest.setButtonText("Start Activity");
-            hp.replace(R.id.fragment_container, updateInterest);
 
+            hp.replace(R.id.fragment_container, updateInterest);
             hp.commit();
+
 
             //Update timer. Update DB with new interest data
         }
@@ -930,6 +950,8 @@ public class MainActivity extends AppCompatActivity
             return timeSpentString;
         }
     }
+
+
 
     public void openContactPage(View v) {
         FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
