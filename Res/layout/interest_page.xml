@@ -4,238 +4,276 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context = ".MainActivity">
 
-
-    <TextView
-        android:id="@+id/InterestName"
-        android:layout_width="166dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Hi"
-        android:textColor="@color/Black"
-        android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/view" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_margin="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="44dp"
-        android:background="@color/design_default_color_primary"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="125dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="136dp"
-        android:text="Edit: "
-        android:textColor="@color/Black"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:fontFamily="sans-serif-black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/startStop"
-        android:layout_width="147dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:onClick = "startStopTimer"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="24dp"
-        android:background="@color/colorPrimary"
-
-        android:text="Start Activity"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toStartOf="@+id/doneButton"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <ScrollView
-        android:layout_width="366dp"
-        android:layout_height="110dp"
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/ActivityLengthText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Activity Length (Minutes)" />
-
-            <EditText
-                android:id="@+id/activityLength"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
-                android:id="@+id/periodFreq"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Period Frequency" />
-
-            <Spinner
-                android:id="@+id/periodSpanInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="text"
-                android:spinnerMode="dropdown" />
-
-            <TextView
-                android:id="@+id/ActivityAmountText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Activity Amount (Times/period) " />
-
-            <EditText
-                android:id="@+id/activityAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
-                android:id="@+id/NumNotificationsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notifications" />
-
-            <EditText
-                android:id="@+id/numNotifications"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
+                android:id="@+id/InterestName"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Hi"
+                android:textColor="@color/Black"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@+id/customNotification"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/SubmitEditInterest"
-                android:layout_width="match_parent"
+                android:id="@+id/customNotification"
+                android:layout_width="149dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="0dp"
-                android:onClick="onEditInterest"
-                android:text="Submit Interest" />
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="52dp"
+                android:layout_marginRight="52dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/colorPrimary"
+                android:onClick="customNotificationBTN"
+                android:text="Customize Notifications "
+                app:layout_constraintBottom_toTopOf="@+id/openGLView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/InterestName" />
+
+            <com.example.activitease.MyGLSurfaceView
+                android:id="@+id/openGLView"
+                android:layout_width="0dp"
+                android:layout_height="228dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/streakCount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customNotification" />
 
             <Button
-                android:id="@+id/delete"
+                android:id="@+id/startStop"
+                android:layout_width="147dp"
+                android:layout_height="55dp"
+
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                android:onClick="startStopTimer"
+
+                android:text="Start Activity"
+                app:layout_constraintEnd_toStartOf="@+id/doneButton"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/openGLView" />
+
+            <TextView
+                android:id="@+id/text_view_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="85dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="00:00"
+                android:textSize="60sp"
+                app:layout_constraintBottom_toBottomOf="@+id/openGLView"
+                app:layout_constraintEnd_toEndOf="@+id/openGLView"
+                app:layout_constraintStart_toStartOf="@+id/openGLView"
+                app:layout_constraintTop_toTopOf="@+id/openGLView" />
+
+            <Button
+                android:id="@+id/doneButton"
+                android:layout_width="147dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="32dp"
+                android:background="@color/colorPrimary"
+                android:onClick="doneBtn"
+                android:text="Done "
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/startStop"
+                app:layout_constraintTop_toBottomOf="@+id/openGLView"
+                app:layout_constraintVertical_bias="0.03" />
+
+
+            <TextView
+                android:id="@+id/streakCount"
+                android:layout_width="100dp"
+                android:layout_height="21dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="TextView"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/startStop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.031"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/openGLView" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:onClick="onDeleteInterest"
-                android:text="Delete Interest" />
-        </LinearLayout>
+                android:layout_height="360dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startStop"
+                app:layout_constraintVertical_bias="0.0">
+
+                <TextView
+                    android:id="@+id/ActivityLengthText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Activity Length (Minutes)" />
+
+                <EditText
+                    android:id="@+id/activityLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+
+                <TextView
+                    android:id="@+id/periodFreq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Period Frequency" />
+
+                <Spinner
+                    android:id="@+id/periodSpanInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:id="@+id/ActivityAmountText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Activity Amount (Times/period) " />
+
+                <EditText
+                    android:id="@+id/activityAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+
+                <TextView
+                    android:id="@+id/NumNotificationsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Daily Notifications" />
+
+                <EditText
+                    android:id="@+id/numNotifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+
+                <Button
+                    android:id="@+id/SubmitEditInterest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="0dp"
+                    android:onClick="onEditInterest"
+                    android:text="Submit Interest" />
+
+                <Button
+                    android:id="@+id/delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:onClick="onDeleteInterest"
+                    android:text="Delete Interest" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="305dp"
+                android:layout_marginRight="305dp"
+                android:text="Edit Interest "
+                android:textSize="18sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startStop"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Switch
+                android:id="@+id/toggleEditInterest"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="157dp"
+                android:layout_marginRight="157dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/textView11"
+                app:layout_constraintTop_toBottomOf="@+id/startStop"
+                app:layout_constraintVertical_bias="0.0" />
+        </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-    <com.example.activitease.MyGLSurfaceView
-        android:id="@+id/openGLView"
-        android:layout_width="360dp"
-        android:layout_height="219dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_view_countdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text = "00:00"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toBottomOf="@+id/openGLView"
-        app:layout_constraintEnd_toEndOf="@+id/openGLView"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/openGLView"
-        app:layout_constraintTop_toTopOf="@+id/openGLView"
-        app:layout_constraintVertical_bias="0.514" />
-
-    <Button
-        android:id="@+id/doneButton"
-        android:layout_width="147dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="24dp"
-        android:background="@color/colorPrimary"
-        android:onClick="doneBtn"
-        android:text="Done "
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.135"
-        app:layout_constraintStart_toEndOf="@+id/startStop" />
-
-
-    <TextView
-            android:id="@+id/streakCount"
-            android:layout_width="100dp"
-            android:layout_height="21dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="TextView"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/startStop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/openGLView"
-            app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/customNotification"
-        android:layout_width="149dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginRight="52dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/colorPrimary"
-        android:onClick="customNotificationBTN"
-        android:text="Customize Notifications "
-        app:layout_constraintBottom_toTopOf="@+id/openGLView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
