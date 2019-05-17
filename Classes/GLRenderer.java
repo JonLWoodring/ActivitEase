@@ -12,13 +12,14 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLRenderer implements GLSurfaceView.Renderer {
+public class GLRenderer implements GLSurfaceView.Renderer
+{
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private float[] colors = new float[2920]; // 2190 vertices and 4 color values per vertice.
     private static boolean timerRunning = false; //Can be toggled to start and stop animation
-    private boolean initialTimerDrawn = false;
+    private boolean drawInitialTimer = true;
     private static int numIterations;
     private static double activityLengthMillis;
     private timer timer;
@@ -27,24 +28,25 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
 
 
-    public static void setTimerRunning(boolean theTimerRunning)
+    public void setTimerRunning(boolean theTimerRunning)
     {
         timerRunning = theTimerRunning;
     }
-    public static void setActivityLength(double activityLength)
+    public void drawInitialTimer(boolean drawInitialTimer){
+        this.drawInitialTimer = drawInitialTimer;
+    }
+    public void setActivityLength(double activityLength)
     {
         activityLengthMillis = activityLength;
         double iterationTime = (float) (activityLengthMillis/91) / 4.00;   //Activity length divided by total number of iterations divided by color coords per iteration
         millisIterationTime = (int) iterationTime;
         nanosIterationTime = (int) iterationTime % 1;
-
-
     }
-    public static void setNumIterations(int iterations)
+    public void setNumIterations(int iterations)
     {
         numIterations = iterations;
     }
-    public static int getNumIterations()
+    public int getNumIterations()
     {
         return numIterations;
     }
@@ -92,13 +94,21 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     }
     public void onDrawFrame(GL10 gl) {
-        if(!initialTimerDrawn)
+        if(drawInitialTimer)
         {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
             timer.draw(mMVPMatrix, numIterations);
-            initialTimerDrawn = true;
+            drawInitialTimer = false;
+
+            synchronized (this) {
+                try {
+                    wait(100);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
         //Animation of timer;
         else if(timerRunning && numIterations < 365)  //Timer is running and iterations are less than total number of
         {

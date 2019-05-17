@@ -1,10 +1,7 @@
 package com.example.activitease;
 
-import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.arch.persistence.room.Room;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,14 +11,10 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,18 +28,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,8 +42,10 @@ public class MainActivity extends AppCompatActivity
     static String currentInterestName;
     String startStopTimerText;
     public final String CHANNEL_ID = "Personal Notification";
+    public final String CHANNEL_ID2= "Time Remaining";
     private final String NOTIFICATION_ID = "001";
     private static String currentDate = getCurrentDate();
+    private static int activeInterestIndex = -1;
     private boolean mShouldUnbind;
     private notificationService mBoundService;
 
@@ -177,11 +166,15 @@ public class MainActivity extends AppCompatActivity
             String description = "Simple notification channel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "channel", importance);
+            NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID2, "channel", importance);
             channel.setDescription(description);
+            channel2.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+            notificationManager.createNotificationChannel(channel2);
+
         }
     }
 
@@ -234,50 +227,95 @@ public class MainActivity extends AppCompatActivity
         hp.commit();
     }
 
+    public boolean checkIfInterestIsActive()
+    {
+        List<Interest> interestList = myDB.myDao().getInterests();
+        boolean interestAlreadyActive = false;
+        for(int i = 0; i <interestList.size(); i++ ) { //Find if an interest is already active
+            if (interestList.get(i).getActivityActive()) {
+                interestAlreadyActive = true;
+                activeInterestIndex = i;
+                break;
+            }
+        }
+        return interestAlreadyActive;
+    }
+
+
     public void openInterest(View view) {
         //Loads the button that the method was called from.
         Button interestB = (Button) view;
-
-        // Name of the interest found from the text of the button.
         String interestName = (String) interestB.getText();
-        // Trims the button text to the interest name, which will be used to trigger db pull.
         interestName = interestName.substring(0, interestName.indexOf(" "));
-        // Loads the interest, using the interest name as the key.
-        Interest thisInterest = MainActivity.myDB.myDao().loadInterestByName(interestName);
-        currentInterestName = thisInterest.getInterestName();
+        Interest thisInterest = MainActivity.myDB.myDao().loadInterestByName(interestName); //Get button text and format to get interest name, then load clicked interest by name
 
-        FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
-        Interest_Fragment populatedInterest = new Interest_Fragment();
+        List<Interest> interestList = myDB.myDao().getInterests(); //Get list of interest
+        Interest activeInterest;
+        String activeInterestName = "";
 
-        /*
-            Initializes variables in the Interest_Fragment object, which will then be used
-            once the Interest_Fragment's onCreateView method is activated.
-         */
-        populatedInterest.initializeInterest(thisInterest.getInterestName());
-        /*
-            pSpanPtr is the pointer for the Spinner selection.
-            0 for day (1), 1 for week (7), 2 for month (30), 3 for year(365, or else in this case).
-         */
-        if (thisInterest.getBasePeriodSpan() == 1) populatedInterest.setpSpanPtr(0);
-        else if (thisInterest.getBasePeriodSpan() == 7) populatedInterest.setpSpanPtr(1);
-        else if (thisInterest.getBasePeriodSpan() == 30) populatedInterest.setpSpanPtr(2);
-        else populatedInterest.setpSpanPtr(3);
+        Boolean interestAlreadyActive = checkIfInterestIsActive(); //Boolean to check if interest is active
 
-        populatedInterest.setNumNotif(thisInterest.getNumNotifications());
-
-        hp.replace(R.id.fragment_container, populatedInterest);
-        hp.commit();
-
-        if(thisInterest.getActivityActive())
-        {
-            populatedInterest.setButtonText("Pause");
-            populatedInterest.pauseTimer();
-            GLRenderer.setTimerRunning(false);
-            populatedInterest.startTimer();
-            GLRenderer.setTimerRunning(true);
+        if(activeInterestIndex != -1) {  //Check if interest is currently active
+            activeInterest = myDB.myDao().loadInterestByName(interestList.get(activeInterestIndex).getInterestName());
+            activeInterestName = activeInterest.getInterestName();
         }
-        else {
-            populatedInterest.setButtonText("Start Activity");
+
+        if(interestAlreadyActive && !(activeInterestName.equals(interestName))) //Deal with interest currently active
+        {
+             new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Hold on there")
+                .setMessage("You're already working on " + interestList.get(activeInterestIndex).getInterestName() + " do you want to go to its page?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Interest_Fragment activeInterestInstance = new Interest_Fragment();
+                        List<Interest> interestList = myDB.myDao().getInterests();
+                        Interest activeInterest = new Interest();
+                        for (int i = 0; i < interestList.size(); i++) { //Find if an interest is already active
+                            if (interestList.get(i).getActivityActive()) {
+                                activeInterest = myDB.myDao().loadInterestByName(interestList.get(i).getInterestName());
+                                break;
+                            }
+                        }
+                        FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
+                        activeInterestInstance.initializeInterest(activeInterest.getInterestName());
+                        hp.replace(R.id.fragment_container, activeInterestInstance);
+                        hp.commit();
+
+                    }
+                })
+                .setNegativeButton("no", null)
+                .show();
+        }
+
+        else
+        {
+            // Name of the interest found from the text of the button.
+            // Trims the button text to the interest name, which will be used to trigger db pull.
+            // Loads the interest, using the interest name as the key.
+            currentInterestName = thisInterest.getInterestName();
+
+            FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
+            Interest_Fragment populatedInterest = new Interest_Fragment();
+
+            /*
+                Initializes variables in the Interest_Fragment object, which will then be used
+                once the Interest_Fragment's onCreateView method is activated.
+             */
+            populatedInterest.initializeInterest(thisInterest.getInterestName());
+            /*
+                pSpanPtr is the pointer for the Spinner selection.
+                0 for day (1), 1 for week (7), 2 for month (30), 3 for year(365, or else in this case).
+             */
+            if (thisInterest.getBasePeriodSpan() == 1) populatedInterest.setpSpanPtr(0);
+            else if (thisInterest.getBasePeriodSpan() == 7) populatedInterest.setpSpanPtr(1);
+            else if (thisInterest.getBasePeriodSpan() == 30) populatedInterest.setpSpanPtr(2);
+            else populatedInterest.setpSpanPtr(3);
+
+            populatedInterest.setNumNotif(thisInterest.getNumNotifications());
+
+            hp.replace(R.id.fragment_container, populatedInterest);
+            hp.commit();
         }
     }
     
@@ -293,6 +331,7 @@ public class MainActivity extends AppCompatActivity
         hp.commit();
 
    }
+
    
    public void editNotifications(View v)
     {
@@ -642,7 +681,6 @@ public class MainActivity extends AppCompatActivity
                         Interest_Fragment resetTimer = new Interest_Fragment();
                         Interest updatedInterest = MainActivity.myDB.myDao().loadInterestByName(currentInterestName);
                         double doneTime = updatedInterest.getActivityLength()-updatedInterest.getTimeRemaining();
-                        resetTimer.resetTimer();
 
                         updatedInterest.addTimeSpent(doneTime);
                         if (!updatedInterest.getStreakCTBool())
@@ -656,6 +694,7 @@ public class MainActivity extends AppCompatActivity
 
                         hp.replace(R.id.fragment_container, resetTimer);
                         hp.commit();
+                        resetTimer.resetTimer();
                     }
 
                 })
@@ -790,9 +829,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void startStopTimer(View v) {
+    public void startStopTimer(View v)
+    {
         Button b = (Button) v;
+        boolean interestAlreadyActive = false;
+        int activeIndex = 0;
         startStopTimerText = b.getText().toString();
+
+
         if (startStopTimerText.equals("Start Activity")) {
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Start Activity")
@@ -808,18 +852,11 @@ public class MainActivity extends AppCompatActivity
 
                             FragmentTransaction hp = getSupportFragmentManager().beginTransaction();
                             updateInterest.initializeInterest(updatedInterest.getInterestName());
-                            GLRenderer.setNumIterations(updatedInterest.getNumIterations());
                             updateInterest.setButtonText("Pause");
 
                             hp.replace(R.id.fragment_container, updateInterest);
                             hp.commit();
                             updateInterest.startTimer();
-                            GLRenderer.setTimerRunning(true);
-                            GLRenderer.setNumIterations(updatedInterest.getNumIterations());
-                            GLRenderer.setActivityLength(updatedInterest.getActivityLength() * 60 * 1000);
-
-
-
                         }
 
                     })

@@ -1,7 +1,6 @@
 package com.example.activitease;
 
 import android.app.Service;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -99,13 +98,13 @@ public class notificationService extends Service
                 {
                     delayMin = notifMinute - currMin;
                 }
-                else if(notifMinute < currMin)
+                else if(notifMinute < currMin)  //Minutes until next notification
                 {
                     minsUntilNextHour = 60 - currMin;
                     delayHour = delayHour - 1;
                     delayMin = minsUntilNextHour + notifMinute;
                 }
-                if(notifSecond >= currSec)
+                if(notifSecond >= currSec)  //Seconds until next notification
                 {
                     delaySec = notifSecond - currSec;
                 }

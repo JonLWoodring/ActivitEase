@@ -5,12 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
-import android.os.CountDownTimer;
-
-
-import static com.example.activitease.MainActivity.getCurrentDate;
 
 
 public class timerRunningThread implements Runnable
